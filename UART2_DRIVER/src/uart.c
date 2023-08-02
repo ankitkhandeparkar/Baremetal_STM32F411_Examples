@@ -32,7 +32,7 @@ void UART_read_write(void)
 
 void UART_write(int ch)
 {
-    USART2->DR = (ch & 0xFF);           // Printing the data
+    USART2->DR = (ch & 0xFF);           // Sending (Printing) the data to the data register
     while (!(USART2->SR & USART_SR_TC)) // Waiting while the UART transmission is completed
         ;
 }
