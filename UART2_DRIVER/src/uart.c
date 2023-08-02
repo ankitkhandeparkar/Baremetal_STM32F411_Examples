@@ -24,7 +24,7 @@ void UART_read_write(void)
     if (USART2->SR & USART_SR_RXNE)
     {
         char ch = USART2->DR;               // Storing the recieved data in a variable
-        USART2->DR = (ch & 0xFF);           // Printing the recieved data
+        USART2->DR = (ch & 0xFF);           // Sending (Printing) the recieved data to the data register
         while (!(USART2->SR & USART_SR_TC)) // Waiting while the UART transmission is completed
             ;
     }
