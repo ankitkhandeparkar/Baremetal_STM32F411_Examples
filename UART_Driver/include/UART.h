@@ -19,13 +19,15 @@
 #define TX_DISABLE 0
 #define RX_DISABLE 0
 
-#define BAUD9600 9600
-#define BAUD115200 115200
-#define BAUD256000 256000
+#define BAUD9600 9600UL
+#define BAUD115200 115200UL
+#define BAUD256000 256000UL
+
+#define INTERNAL_CLOCK 16000000UL
 
 uint8_t uart_active_flag;
 
-void uart_init(uint8_t uart, uint32_t baud, uint8_t txe, uint8_t rxe);
+void uart_init(uint8_t uart, uint32_t clock, uint32_t baud, uint8_t txe, uint8_t rxe);
 void send(int c);
 char recieve(void);
 void uart_rx_tx(void);

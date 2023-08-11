@@ -7,32 +7,21 @@
 #include "UART.h"
 #include "stm32f4xx.h"
 
-void uart_init(uint8_t uart, uint32_t baud, uint8_t txe, uint8_t rxe)
+void uart_init(uint8_t uart, uint32_t clock, uint32_t baud, uint8_t txe, uint8_t rxe)
 {
     // Select the baud rate in hex
-    uint32_t br;
-    switch (baud)
-    {
-    case BAUD9600:
-        br = 0x0683;
-        break;
-    case BAUD115200:
-        br = 0x008B;
-        break;
-    case BAUD256000:
-        br = 0x0045;
-        break;
-
-    default:
-        br = 0x0683;
-        break;
-    }
+    uint32_t br = (clock + (baud / 2)) / baud;
 
     // Enable clock for the UART and corresponding GPIO
     if (uart == UART1)
     {
         // GPIO clock
         RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+        // GPIO alternation function
+        GPIOA->MODER |= (GPIO_MODER_MODER9_1 | GPIO_MODER_MODER10_1);
+        GPIOA->MODER &= ~(GPIO_MODER_MODER9_0 | GPIO_MODER_MODER10_0);
+        GPIOA->AFR[1] |= 0X0770;
+
         // UART clock
         RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
         // Set baud rate
@@ -54,6 +43,10 @@ void uart_init(uint8_t uart, uint32_t baud, uint8_t txe, uint8_t rxe)
     {
         // GPIO clock
         RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+        // GPIO alternation function
+        GPIOA->MODER |= (GPIO_MODER_MODER2_1 | GPIO_MODER_MODER3_1);
+        GPIOA->MODER &= ~(GPIO_MODER_MODER2_0 | GPIO_MODER_MODE3_0);
+        GPIOA->AFR[0] |= 0X7700;
         // UART clock
         RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
         // Set baud rate
@@ -75,6 +68,10 @@ void uart_init(uint8_t uart, uint32_t baud, uint8_t txe, uint8_t rxe)
     {
         // GPIO clock
         RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+        // GPIO alternation function
+        GPIOA->MODER |= (GPIO_MODER_MODER11_1 | GPIO_MODER_MODER12_1);
+        GPIOA->MODER &= ~(GPIO_MODER_MODER11_0 | GPIO_MODER_MODE12_0);
+        GPIOA->AFR[1] |= 0X00088000;
         // UART clock
         RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
         // Set baud rate
@@ -98,24 +95,24 @@ void send(int c)
     switch (uart_active_flag)
     {
     case UART1:
-        USART1->DR = (c && 0xFF);
+        USART1->DR = (c & 0xFF);
         while (!(USART1->SR & USART_SR_TC))
             ;
         break;
 
     case UART2:
-        USART2->DR = (c && 0xFF);
+        USART2->DR = (c & 0xFF);
         while (!(USART2->SR & USART_SR_TC))
             ;
         break;
 
     case UART6:
-        USART6->DR = (c && 0xFF);
+        USART6->DR = (c & 0xFF);
         while (!(USART6->SR & USART_SR_TC))
             ;
         break;
     default:
-        USART1->DR = (c && 0xFF);
+        USART1->DR = (c & 0xFF);
         while (!(USART1->SR & USART_SR_TC))
             ;
         break;
