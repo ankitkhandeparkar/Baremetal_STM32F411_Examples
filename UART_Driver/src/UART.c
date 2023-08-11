@@ -5,7 +5,10 @@
  ***********************************/
 
 #include "UART.h"
+#include "stdarg.h"
+#include "stdlib.h"
 #include "stm32f4xx.h"
+#include "string.h"
 
 void uart_init(uint8_t uart, uint32_t clock, uint32_t baud, uint8_t txe, uint8_t rxe)
 {
@@ -192,5 +195,45 @@ void uart_rx_tx(void)
         while (!(USART1->SR & USART_SR_TC))
             ;
         break;
+    }
+}
+
+void LOG(char *msg, ...) // pointer to char (msg) and "..." means undefined amount of arguments that user can pass
+{
+    // buffer to hold the message to be printted
+    char buffer[250];
+
+    va_list args;
+    va_start(args, msg);         // extract all the arguments (eg: %d, %f) and re-format the msg
+    vsprintf(buffer, msg, args); // put the re-formatted msg into the buffer
+
+    // print the buffer character by character
+    for (int i = 0; i < strlen(buffer); i++)
+    {
+        switch (uart_active_flag)
+        {
+        case UART1:
+            USART1->DR = (buffer[i] & 0xFF);
+            while (!(USART1->SR & USART_SR_TC))
+                ;
+            break;
+
+        case UART2:
+            USART2->DR = (buffer[i] & 0xFF);
+            while (!(USART2->SR & USART_SR_TC))
+                ;
+            break;
+
+        case UART6:
+            USART6->DR = (buffer[i] & 0xFF);
+            while (!(USART6->SR & USART_SR_TC))
+                ;
+            break;
+        default:
+            USART1->DR = (buffer[i] & 0xFF);
+            while (!(USART1->SR & USART_SR_TC))
+                ;
+            break;
+        }
     }
 }

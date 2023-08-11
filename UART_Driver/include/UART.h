@@ -31,5 +31,6 @@ void uart_init(uint8_t uart, uint32_t clock, uint32_t baud, uint8_t txe, uint8_t
 void send(int c);
 char recieve(void);
 void uart_rx_tx(void);
+void LOG(char *msg, ...);
 
 #endif /* UART_H */
