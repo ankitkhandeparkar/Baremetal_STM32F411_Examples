@@ -9,10 +9,10 @@ int main(void)
     UART2_Init(Clock, Baudrate);
     while (1)
     {
-        UART_read_write();
-        // UART_write('H');
-        // UART_write('i');
-        // UART_write('\n');
+        // UART_read_write();
+        UART_write('H');
+        UART_write('i');
+        UART_write('\n');
     }
     return 0;
 }
