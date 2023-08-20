@@ -17,8 +17,8 @@ void pwm_pa8_init(void)
     GPIOA->MODER |= GPIO_MODER_MODER8_1;
     GPIOA->AFR[1] |= GPIO_AFRH_AFRH0_0;
 
-    TIM1->PSC = 16 - 1;
-    TIM1->ARR = 20000 - 1;
+    TIM1->PSC = 96;
+    TIM1->ARR = 19999;
     TIM1->CCMR1 |= (TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1PE);
     TIM1->BDTR |= TIM_BDTR_MOE;
     TIM1->CCER |= TIM_CCER_CC1E;
@@ -33,12 +33,12 @@ void pwm_pa5_init(void)
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
     RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
 
-    // enable GPIO A pin 5 alternate function(AF1)
+    // enable GPIO A pin 5 alternate functio<n(AF1)
     GPIOA->MODER |= GPIO_MODER_MODER5_1;
     GPIOA->AFR[0] |= GPIO_AFRL_AFRL5_0;
 
-    TIM2->PSC = 17 - 1;
-    TIM2->ARR = 20000 - 1;
+    TIM2->PSC = 96;
+    TIM2->ARR = 19999;
     TIM2->CCMR1 |= (TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1PE);
     TIM2->BDTR &= ~TIM_BDTR_MOE;
     TIM2->CCER |= TIM_CCER_CC1E;
